@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  trino-coordinator:
+    container_name: trino-coordinator
+    hostname: trino-coordinator
+    build:
+      context: .
+      dockerfile: ./docker/trino/Dockerfile
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/coordinator:/etc/trino
+    ports:
+      - "8099:8080"
+
+  trino-worker-1:
+    container_name: trino-worker-1
+    hostname: trino-worker-1
+    build:
+      context: .
+      dockerfile: ./docker/trino/Dockerfile
+    env_file:
+      - ./.env
+    depends_on:
+      - trino-coordinator
+    volumes:
+      - ./config/worker:/etc/trino
+
+  trino-worker-2:
+    container_name: trino-worker-2
+    hostname: trino-worker-2
+    build:
+      context: .
+      dockerfile: ./docker/trino/Dockerfile
+    env_file:
+      - ./.env
+    depends_on:
+      - trino-coordinator
+    volumes:
+      - ./config/worker:/etc/trino
+
+  trino-worker-3:
+    container_name: trino-worker-3
+    hostname: trino-worker-3
+    build:
+      context: .
+      dockerfile: ./docker/trino/Dockerfile
+    env_file:
+      - ./.env
+    depends_on:
+      - trino-coordinator
+    volumes:
+      - ./config/worker:/etc/trino
+
+networks:
+  default:
+    name: data-platform
+    external: true
